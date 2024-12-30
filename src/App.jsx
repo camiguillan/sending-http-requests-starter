@@ -16,6 +16,7 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [error, seterror] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [loadPlacesError, setLoadPlacesError] = useState();
 
   useEffect(() => {
     async function fetchPlaces() {
@@ -24,11 +25,11 @@ function App() {
         const userPlaces = await fetchUserPlaces();
         const response = setUserPlaces(userPlaces);
       } catch (error) {
-        seterror({
+        setLoadPlacesError({
           message:
             error.message || "Could not fetch places, please try again later",
         });
-        setUserPlaces([]);
+        // setUserPlaces([]);
       }
       setIsLoading(false);
     }
@@ -127,9 +128,10 @@ function App() {
         </p>
       </header>
       <main>
-        {error ? (
+        {loadPlacesError && (
           <Error title="An Error occured" message={error.message} />
-        ) : (
+        )}
+        {!loadPlacesError && (
           <Places
             title="I'd like to visit ..."
             fallbackText="Select the places you would like to visit below."
@@ -139,7 +141,6 @@ function App() {
             onSelectPlace={handleStartRemovePlace}
           />
         )}
-
         <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>
     </>
