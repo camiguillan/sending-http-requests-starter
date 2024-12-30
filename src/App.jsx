@@ -28,9 +28,9 @@ function App() {
           message:
             error.message || "Could not fetch places, please try again later",
         });
+        setUserPlaces([]);
       }
       setIsLoading(false);
-      setUserPlaces([]);
     }
 
     fetchPlaces();
