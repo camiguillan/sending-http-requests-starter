@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 
 import Places from "./components/Places.jsx";
 import Modal from "./components/Modal.jsx";
@@ -7,35 +7,19 @@ import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces.jsx";
 import { updateUserPlaces, fetchUserPlaces } from "./http.js";
 import Error from "./components/Error.jsx";
+import { useFetch } from "./hooks/useFetch.js";
 
 function App() {
   const selectedPlace = useRef();
-
-  const [userPlaces, setUserPlaces] = useState([]);
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [error, seterror] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadPlacesError, setLoadPlacesError] = useState();
+  const [errorUpdateplaces, seterror] = useState();
 
-  useEffect(() => {
-    async function fetchPlaces() {
-      setIsLoading(true);
-      try {
-        const userPlaces = await fetchUserPlaces();
-        const response = setUserPlaces(userPlaces);
-      } catch (error) {
-        setLoadPlacesError({
-          message:
-            error.message || "Could not fetch places, please try again later",
-        });
-        // setUserPlaces([]);
-      }
-      setIsLoading(false);
-    }
-
-    fetchPlaces();
-  }, []);
+  const {
+    error,
+    isLoading,
+    data: userPlaces,
+    setData: setUserPlaces,
+  } = useFetch(fetchUserPlaces, []);
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -58,10 +42,7 @@ function App() {
     });
 
     try {
-      const dataUpdated = await updateUserPlaces([
-        selectedPlace,
-        ...userPlaces,
-      ]);
+      await updateUserPlaces([selectedPlace, ...userPlaces]);
     } catch (error) {
       seterror({
         message:
@@ -94,20 +75,22 @@ function App() {
 
       setModalIsOpen(false);
     },
-    [userPlaces]
+    [userPlaces, setUserPlaces]
   );
 
   function handleError() {
     seterror(null);
   }
 
+  // console.log(userPlaces);
+
   return (
     <>
-      <Modal open={error} onClose={handleError}>
-        {error && (
+      <Modal open={errorUpdateplaces} onClose={handleError}>
+        {errorUpdateplaces && (
           <Error
             title="An Error occured"
-            message={error.message}
+            message={errorUpdateplaces.message}
             onConfirm={handleError}
           />
         )}
@@ -128,10 +111,8 @@ function App() {
         </p>
       </header>
       <main>
-        {loadPlacesError && (
-          <Error title="An Error occured" message={loadPlacesError.message} />
-        )}
-        {!loadPlacesError && (
+        {error && <Error title="An Error occured" message={error.message} />}
+        {!error && (
           <Places
             title="I'd like to visit ..."
             fallbackText="Select the places you would like to visit below."
