@@ -18,11 +18,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchUserPlaces() {
+    async function fetchPlaces() {
       setIsLoading(true);
       try {
         const userPlaces = await fetchUserPlaces();
-        setUserPlaces(userPlaces);
+        const response = setUserPlaces(userPlaces);
       } catch (error) {
         seterror({
           message:
@@ -30,9 +30,10 @@ function App() {
         });
       }
       setIsLoading(false);
+      setUserPlaces([]);
     }
 
-    fetchUserPlaces();
+    fetchPlaces();
   }, []);
 
   function handleStartRemovePlace(place) {
@@ -109,7 +110,6 @@ function App() {
             onConfirm={handleError}
           />
         )}
-        ;
       </Modal>
       <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
