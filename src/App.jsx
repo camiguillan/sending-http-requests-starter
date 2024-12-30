@@ -129,7 +129,7 @@ function App() {
       </header>
       <main>
         {loadPlacesError && (
-          <Error title="An Error occured" message={error.message} />
+          <Error title="An Error occured" message={loadPlacesError.message} />
         )}
         {!loadPlacesError && (
           <Places
