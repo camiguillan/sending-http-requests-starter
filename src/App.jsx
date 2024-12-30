@@ -133,7 +133,7 @@ function App() {
           <Places
             title="I'd like to visit ..."
             fallbackText="Select the places you would like to visit below."
-            loadingText="fetching user places"
+            loadingText="fetching user places..."
             isLoading={isLoading}
             places={userPlaces}
             onSelectPlace={handleStartRemovePlace}

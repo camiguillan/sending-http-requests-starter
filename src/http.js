@@ -34,5 +34,5 @@ export async function fetchUserPlaces() {
     throw new Error("Failed to update user Places");
   }
 
-  return resData.message;
+  return resData.places;
 }
